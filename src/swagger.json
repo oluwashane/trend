@@ -1,0 +1,479 @@
+{
+  "openapi":"3.0.2",
+  "info": {
+      "title":"Social",
+      "description": "user and comment microservices",
+      "version":"0.0.1"
+  },
+  "servers": [
+      {"url":"http://localhost:3000/api/v1"}
+  ],
+  "paths": {
+      "/users/new": {
+          "post": {
+              "summary": "create new user",
+              "tags": ["Users"],
+              "requestBody": {
+                  "required": true,
+                  "content": {
+                      "application/json": {
+                          "schema": {
+                              "type":"object",
+                              "properties": {
+                                  "contact": {
+                                    "firtName": {
+                                        "type": "string"
+                                    },
+                                    "lastName": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    }
+                                  },
+                                  "_id": "number",
+                                  "profilePictureUrl": {
+                                      "type": "string"
+                                  },
+                                  "username": {
+                                      "type": "string"
+                                  },
+                                  "updatedAt": {
+                                      "type": "date"
+                                  }
+                              },
+                              "example": {
+                                "contact": {
+                                    "firstName": "name",
+                                    "lastName": "name",
+                                    "email": "name"
+                                },
+                                "_id" : "10099703348",
+                                "profilePictureUrl" : "https://scontent-frx5-1.cdninstagram.com/vp/3aa0447610b112274c856577e856c09a/5D8C949F/t51.2885-19/s150x150/57488347_287987352103624_4647257092191682560_n.jpg?_nc_ht=scontent-frx5-1.cdninstagram.com",
+                                "updatedAt" : 1559819705830,
+                                "username" : "zwillinge2019"
+                            }
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "201": {
+                      "description": "Created"
+                  }
+              }
+          }
+      },
+      "/users/{id}": {
+          "get": {
+              "summary": "view user profile",
+              "tags": ["Users"],
+              "parameters": [
+                {
+                    "name": "id",
+                    "in":"path",
+                    "description": "User ID",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "required": true
+                }
+              ],
+              "description": "Get user information",
+              "responses": {
+                  "200": {
+                      "description": "Ok",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/Users"
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "$ref": "#/components/responses/BadRequest"
+                  }
+              }
+          },
+          "patch": {
+              "summary": "update user profile",
+              "tags": ["Users"],
+              "parameters": [
+                {
+                    "name": "id",
+                    "in":"path",
+                    "description": "User ID",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "required": true
+                }
+              ],
+              "requestBody":{
+                  "$ref": "#/components/requestBodies/userBody"
+              },
+              "responses": {
+                  "200": {
+                      "description": "Ok",
+                      "content": {
+                          "application/json": {
+                              "schema":{
+                                  "$ref": "#/components/schemas/Users"
+                              }
+                          }
+                      }
+                  },
+                  "401": {
+                      "$ref": "#/components/responses/Unauthorized"
+                  }
+              }
+          },
+          "delete": {
+              "summary": "delete user profile",
+              "parameters": [
+                {
+                    "name": "id",
+                    "in":"path",
+                    "description": "User ID",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "required": true
+                }
+              ],
+              "tags": ["Users"],
+              "description": "This can only be done by the logged in user",
+              "responses": {
+                  "200": {
+                      "description": "Ok"
+                  },
+                  "401": {
+                      "$ref": "#/components/responses/Unauthorized"
+                  }
+              }
+          }
+      },
+
+      "/comments/new": {
+          "post": {
+              "summary": "add new comment",
+              "tags": ["Comments"],
+              "requestBody":{
+                  "$ref": "#/components/requestBodies/commentBody"
+              },
+              "responses": {
+                  "201": {
+                      "description": "Created",
+                      "content":{
+                          "application/json": {
+                              "schema":{
+                                  "$ref": "#/components/schemas/Comments"
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "$ref": "#/components/responses/BadRequest"
+                  }
+              }
+          }
+      },
+
+      "/comments/stats": {
+        "get": {
+            "summary": "return list of comment",
+            "tags":["Comments"],
+            "responses": {
+                "200": {
+                    "description": "Ok"
+                }
+            }
+        }
+      },
+      "/comments/single/{id}": {
+        "get": {
+            "summary": "return single comment",
+            "tags":["Comments"],
+            "parameters": [
+                {
+                    "name": "id",
+                    "in":"path",
+                    "description": "Comments ID",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "required": true
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Ok",
+                    "content": {
+                        "application/json": {
+                            "schema":{
+                                "$ref": "#/components/schemas/Comments"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+      },
+      "/comments/{userId}": {
+        "get": {
+            "summary": "return list of comment by user ID",
+            "tags":["Comments"],
+            "parameters": [
+                {
+                    "name": "userId",
+                    "in":"path",
+                    "description": "User ID",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "required": true
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Ok",
+                    "content": {
+                        "application/json": {
+                            "schema":{
+                                "$ref": "#/components/schemas/Comments"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+      },
+
+      "/comments/{id}": {
+          "patch": {
+              "summary": "update items in comment by ID",
+              "tags":["Comments"],
+              "parameters": [
+                  {
+                      "name": "id",
+                      "in":"path",
+                      "description": "Comments ID",
+                      "schema": {
+                          "type": "string"
+                      },
+                      "required": true
+                  }
+              ],
+              "requestBody":{
+                  "$ref": "#/components/requestBodies/commentBody"
+              },
+              "responses": {
+                  "200": {
+                      "description": "Ok",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schema/Comments"
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "$ref": "#/components/responses/BadRequest"
+                  },
+                  "500": {
+                      "$ref": "#/components/responses/ServerError"
+                  }
+              }
+          },
+          "delete": {
+              "summary": "delete items in comment by ID",
+              "tags":["Comments"],
+              "parameters": [
+                  {
+                      "name": "id",
+                      "in":"path",
+                      "description": "Comments ID",
+                      "schema": {
+                          "type": "string"
+                      },
+                      "required": true
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Ok"
+                  },
+                  "401": {
+                      "$ref": "#/components/responses/Unauthorized"
+                  },
+                  "500": {
+                      "$ref": "#/components/responses/ServerError"
+                  }
+              }
+          }
+      }
+  },
+  "components": {
+      "securitySchemes": {
+          "bearerAuth": {
+              "type":"http",
+              "scheme": "bearer",
+              "bearerFormat": "JWT"
+          }
+      },
+      "requestBodies": {
+          "userBody": {
+              "description": "it contains user information",
+              "required": true,
+              "content": {
+                  "application/json": {
+                      "schema": {
+                          "$ref": "#/components/schemas/Users"
+                      }
+                  }
+              }
+          },
+          "commentBody": {
+              "description": "it contains comment information",
+              "required": true,
+              "content": {
+                  "application/json": {
+                      "schema": {
+                          "$ref": "#/components/schemas/Comments"
+                      }
+                  }
+              }
+          }
+      },
+      "responses": {
+          "NotFound": {
+              "description": "The specified resource was not found",
+              "content": {
+                  "application/json": {
+                      "schema": {
+                          "$ref": "#/components/schemas/Error"
+                      }
+                  }
+              }
+          },
+          "Unauthorized": {
+              "description": "Unauthorized",
+              "content": {
+                  "application/json": {
+                      "schema": {
+                          "$ref": "#/components/schemas/Error"
+                      }
+                  }
+              }
+          },
+          "ServerError": {
+              "description": "Internal Server Error",
+              "content": {
+                  "application/json": {
+                      "schema": {
+                          "$ref": "#/components/schemas/Error"
+                      }
+                  }
+              }
+          }
+          ,
+          "BadRequest": {
+              "description": "Bad Request",
+              "content": {
+                  "application/json": {
+                      "schema": {
+                          "$ref": "#/components/schemas/Error"
+                      }
+                  }
+              }
+          }
+      },
+      "schemas": {
+          "Users": {
+              "type": "object",
+              "properties": {
+                "contact": {
+                    "firstName": {
+                        "type":"string"
+                    },
+                    "lastName": {
+                        "type":"string"
+                    },
+                    "email": {
+                        "type":"string"
+                    }
+                },
+                "_id" : {"type":"number"},
+                "profilePictureUrl" : {"type":"string"},
+                "updatedAt" : {"type":"Date"},
+                "username" : {"type":"string"}
+              },
+              "example": {
+                "contact": {
+                  "firstName": "Georgianna",
+                  "lastName": "Gleason",
+                  "email": "Brennan16@hotmail.com"
+                },
+                "_id": "10099703348",
+                "profilePictureUrl": "https://scontent-frx5-1.cdninstagram.com/vp/3aa0447610b112274c856577e856c09a/5D8C949F/t51.2885-19/s150x150/57488347_287987352103624_4647257092191682560_n.jpg?_nc_ht=scontent-frx5-1.cdninstagram.com",
+                "updatedAt": 1559819705830,
+                "username": "zwillinge2019"
+              },
+              "required":["username", "password", "tel", "address"] 
+          },
+          "Comments": {
+              "type": "object",
+              "properties": {
+                    "_id": {
+                        "type":"number"
+                    },
+                    "hashTags": {
+                        "type": "array"
+                    },
+                    "mentions": {
+                        "type": "array"
+                    },
+                    "text": {
+                    "type": "string"
+                    },
+                    "userId": {
+                    "type": "number"
+                    },
+                    "timestamp": {
+                        "type": "Date"
+                    }
+              },
+              "example": {
+                "_id" : "17975662396250187",
+                "hashTags" : [
+                    "Queensberry",
+                    "Comeback",
+                    "Antonella"
+                ],
+                "mentions" : [
+                    "seashells_and_stardust",
+                    "mrs.tpprt"
+                ],
+                "text" : "Oh cool , gibt es bald ein #Queensberry #Comeback ?? Würde mich total freuen , @seashells_and_stardust war ja gestern auch da , aber wenn Comeback , dann nur in Original-Besetzung @mrs.tpprt und #Antonella",
+                "timestamp" : 1559079334,
+                "userId" : "1111608826"
+               },
+              "required": ["timestamp", "text", "userId"]
+          },
+          "Error": {
+              "type": "object",
+              "properties": {
+                  "code": {
+                      "type":"string"
+                  },
+                  "message": {
+                      "type": "string"
+                  }
+              },
+              "required": ["code", "message"]
+          }
+      }
+  }
+}
